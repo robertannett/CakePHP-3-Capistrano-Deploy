@@ -4,12 +4,12 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-#role :app, %w{rachaelannett@rachaelannett.co.uk}
-#role :web, %w{rachaelannett@rachaelannett.co.uk}
-#role :db,  %w{rachaelannett@rachaelannett.co.uk}
+#role :app, %w{user@mydomain.com}
+#role :web, %w{user@mydomain.com}
+#role :db,  %w{user@mydomain.com}
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/var/www/vhosts/mmthdev.com/habitat.mmthdev.com'
+set :deploy_to, '/var/www/vhosts/mywebroot'
 
 # Extended Server Syntax
 # ======================
@@ -17,10 +17,7 @@ set :deploy_to, '/var/www/vhosts/mmthdev.com/habitat.mmthdev.com'
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server '205.186.154.115', 
-port: 22,
-roles: %w{web app db}
-
+server 'myServerIP'
 
 # Custom SSH Options
 # ==================
@@ -48,16 +45,19 @@ roles: %w{web app db}
 #     # password: 'please use keys'
 #   }
 
+
+
 set :linked_dirs, %w{
-	src/private/app/files
-	src/private/app/tmp
-	src/public/media
+	logs
+	tmp
 }
 set :linked_files, %w{
-	src/private/app/Config/core.php
-	src/private/app/Config/database.php
+	config/app.php
 }
 
 namespace :deploy do
-  after :finishing, 'deploy:cleanup'
+  after :finishing, 'deploy:cleanup' # Clean Up releases
+  after :finishing, 'composer:install_executable' # Run composer install on server for adding vendors
 end
+
+
